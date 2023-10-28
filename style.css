@@ -1,13 +1,35 @@
 body {
   box-sizing: border-box;
+  padding: 0;
+  margin: 0;
 }
 span {
   display: block;
-  width: 50px;
-  height: 50px;
-  border: 1px solid #000;
+  width: 120px;
+  height: 120px;
+  border: 2px solid #000;
+  font-size: 80px;
+  text-align: center;
 }
 
 span.a0, span.b0 {
   height: 100px;
+}
+
+table{
+  background-color: #fff;
+  position: absolute;
+  top: 90px;
+  left: 250px;
+  z-index: 10;
+}
+
+div{
+  margin: 0;
+  padding: 0;
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  background: url(img/background.png) center / cover;
+  z-index: -10;
 }
