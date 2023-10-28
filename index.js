@@ -1,14 +1,15 @@
 let pokets = [];
 pokets = reset(pokets);
-console.log(pokets)
+// console.log(pokets)
 
 let turn = true;
 
 $(function(){
   show()
   $('span').click(function(){
+    // ボタンをクリックしたとき
     selectedBoxNum = parseInt($(this).attr('class'));
-    console.log(selectedBoxNum);
+    // console.log(selectedBoxNum);
 
     if(turnJudge(selectedBoxNum)){
       moveStones(selectedBoxNum)
@@ -45,10 +46,10 @@ $(function(){
           putPlace = 0
         }
       }
-      console.log(pokets[selectedBoxNum] != 0)
-      console.log(pokets[putPlace-1] == 0)
-      console.log( !goalBoxJudge(putPlace-1))
-      console.log( areaJudge(putPlace-1))
+      // console.log(pokets[selectedBoxNum] != 0)
+      // console.log(pokets[putPlace-1] == 0)
+      // console.log( !goalBoxJudge(putPlace-1))
+      // console.log( areaJudge(putPlace-1))
       if(pokets[selectedBoxNum] != 0 && pokets[putPlace-1] == 0 && !goalBoxJudge(putPlace-1) && areaJudge(putPlace-1)){
         $('span.'+(13 - putPlace)).css("border", "2px solid red");
       }
@@ -60,7 +61,7 @@ $(function(){
   function(){
     // 離れたとき
     $('span').css('background','#fff');
-    $('span').css('border','1px solid #000');
+    $('span').css('border','2px solid #000');
   }
   )
 
@@ -69,6 +70,7 @@ $(function(){
 function reset(pokets){
   pokets = [4,4,4,4,4,4,0,4,4,4,4,4,4,0];
   // pokets = [0,0,0,0,0,4,0,4,4,4,4,4,4,0];
+  pokets = [4,4,4,4,4,4,0,0,0,0,0,2,1,0];
   // pokets = [0,1,2,3,4,5,6,7,8,9,10,11,12,13];
   return pokets;
 }
@@ -82,10 +84,9 @@ function show(){
   if(turn){
     color = '#f00';
   }else {
-    console.log("a")
     color = '#0f0';
   }
-  $('table').css('border', '3px solid ' + color)
+  $('table').css('border', '5px solid ' + color)
 }
 
 function turnJudge(selectedBoxNum){
@@ -126,7 +127,6 @@ function moveStones(selectedBoxNum){
       putPlace = 0
     }
   }
-  console.log(pokets)
   lastPoket = selectedBoxNum + stoneNum
   if (lastPoket > 13){
     lastPoket -= 14;
@@ -136,13 +136,15 @@ function moveStones(selectedBoxNum){
     return true
   }
   // 最後に置いたポケットが自分の陣地であり、空だった場合、その向かい側のポケットの石を総取りする
-  if(turnJudge(lastPoket) && (pokets[lastPoket] == 1)){
+  // 相手のポケットが空の場合総取りすることができない
+  if(turnJudge(lastPoket) && (pokets[lastPoket] == 1) && pokets[12-lastPoket] != 0){
     oppositeStoneNum = pokets[12-lastPoket];
     pokets[12-lastPoket] = 0;
+    pokets[lastPoket] = 0;
     if(turn){
-      pokets[6] += oppositeStoneNum;
+      pokets[6] += oppositeStoneNum + 1;
     }else {
-      pokets[13] += oppositeStoneNum;
+      pokets[13] += oppositeStoneNum + 1;
     }
   }
   // ターンを変更する
@@ -158,34 +160,32 @@ function endJudge(){
       }
     }
     flag2=true
-    for(i = 7; i < 12; i++){
+    for(i = 7; i < 13; i++){
       if(pokets[i] > 0){
         flag2 = false
         break
       }
     }
-  if(flag || flag2){
-    return true
-  }else{
-    return false
-  }
+  return (flag || flag2)
 }
 function end(){
   console.log('end');
   // 相手の側のポケットに入っていた石はすべて相手のものとなる
   let i;
   let max;
-  if(turn){
-    i = 0
-    max = 6
-  }else{
-    i = 7
-    max = 13
+  for (l = 0; l < 2; l++ ){
+    if(l){
+      i = 0
+      max = 6
+    }else{
+      i = 7
+      max = 13
+    }
+    let sumStone = 0;
+    for(i; i < max; i++){
+      sumStone += pokets[i];
+      pokets[i] = 0
+    }
+    pokets[max] += sumStone;
   }
-  let sumStone = 0;
-  for(i; i < max; i++){
-    sumStone += pokets[i];
-    pokets[i] = 0
-  }
-  pokets[max] += sumStone;
 }
